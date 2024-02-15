@@ -1,18 +1,26 @@
 first of all , lets look at our binary in a disassembler
 we got a main function 
+
 ![functions](/pwn/img/2/functions.png)
+
 unlike the previous challenge , we dont have a win function . thats when you start realizing the meaning of the challenge name.
 so we'll have to pop our own shell and for that we need to check the security measures on the binary with the checksec command.
+
 ![checksec](/pwn/img/2/checksec.png)
+
 1. partial relro : means that the got and plt entries are writable . we'll explain what those 2 sections are in a sec . 
 2. no pie : means our binary has fixed base . which is useful
 
 lets break down the program now  
+
 ![main](/pwn/img/2/main.png)
+
 quick look on the program and you can tell there is no BOF . But if you look at the scanf , the format is given by the user . For example if we send ```"%d %d``` to read, this scanf will get executed ```scanf("%d %d",&v6,&v5)```. This is the infamous **format string** vulnerability. I encourage you to read about it in this [link](https://ir0nstone.gitbook.io/notes/types/stack/format-string) as i wont explain format strings from scratch in this writeup . 
 now back to the plt ang got section . lets see happens when you call a libc function like puts for example:
 1. the puts@plt gets called
+
 ![puts-plt](/pwn/img/2/puts-plt.png)
+
 2. the function jumps to whatever pointer is inside the <puts@got.plt> , and in normal cases it would be the adress of printf inside of libc.
 and guess what ? this region is writeable in our challenge because relro is partial.
 
