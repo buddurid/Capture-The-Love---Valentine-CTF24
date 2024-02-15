@@ -1,9 +1,13 @@
 we start looking at our binary in a disassembler and we can notice love function AKA win function which means this chall wont be annoying . 
 here's how the win func looks like !!
+
 ![win](/img/1/win.png)
+
 4 condtions so we can get a flag ? looks like a pain in the ass but we'll look at that later . 
 let's have a look at our main function . 
+
 ![main](/img/1/main.png)
+
 looks like the program will read an int in a size variable from the user then read size-1 bytes . Notice how he compares our requested size with 27 , but it looks like he forgot about negative numbers . you might ask what happens if we pass 0 to size , well the ```size-1=-1``` .-1 is represented in memory as an int like this : **0xffffffff** . the thing is when we execute ```read(0,buffer,-1)``` , the -1 in memory wont be treated as an int but as an unsigned int in other words **0xffffffff** because third argument gets casted to ```size_t``` type which is basically ```unsigned int``` . 
 
 thats what is supposed to be happening but after debugging and looking closely at gdb , you notice a strange line  
